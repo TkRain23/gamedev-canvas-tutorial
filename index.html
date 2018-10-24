@@ -43,6 +43,33 @@
         var rightPressed = false;
         var leftPressed = false;
 
+        // brick layout
+        var brickRowCount = 3;
+        var brickColumnCount = 5;
+
+        // brick specifications
+        var brickWidth = 75;
+        var brickHeight = 20;
+
+        // padding in between bricks so that they do not touch one another
+        var brickPadding = 10;
+        // offset so the bricks will not be drawn at the edge of the canvas
+        var brickOffsetTop = 30;
+        var brickOffsetLeft = 30;
+
+        // two dimensional array to carry brick columns and rows
+        var bricks = [];
+
+        for(var columns = 0; columns < brickColumnCount; columns++)
+        {
+            bricks[columns] = [];
+            for(var rows = 0; rows < brickRowCount; rows++)
+            {
+                bricks[columns][rows] = {x: 0, y:  0};
+            }
+        }
+
+
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
 
@@ -86,6 +113,7 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBricks();
             drawBall();
             drawPaddle();
 
@@ -127,6 +155,25 @@
             ctx.fillStyle = "#0095DD";
             ctx.fill();
             ctx.closePath();
+        }
+
+        function drawBricks()
+        {
+            for(var columns = 0; columns < brickColumnCount; columns++)
+            {
+                for(var rows = 0; rows < brickRowCount; rows++)
+                {
+                    var brickX = (columns*(brickWidth + brickPadding)) + brickOffsetLeft;
+                    var brickY = (rows*(brickHeight  + brickPadding)) + brickOffsetTop;
+                    bricks[columns][rows].x = brickX;
+                    bricks[columns][rows].y = brickY;
+                    ctx.beginPath();
+                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    ctx.fillStyle = "#0095DD";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
         }
 
         setInterval(draw, 10);
