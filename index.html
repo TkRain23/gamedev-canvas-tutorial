@@ -42,6 +42,8 @@
             }
 
             render(ctx) {
+                console.log('where mawh bawl')
+                console.log(ball.x)
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
@@ -114,22 +116,25 @@
             constructor(score = 0) {
                 this.color = "#0095DD";
                 this.font = "16px Comic Sans MS";
-                this.score = ("Score: " + score);
+                this.score = score;
+                this.scoreString = ("Score: " + this.score);
                 this.x = 8;
                 this.y = 20;
 
             }
 
             render(ctx) {
+                this.scoreString = ("Score: " + this.score);
                 ctx.font = this.font;
                 ctx.fillStyle = this.color;
-                ctx.fillText(this.score, this.x, this.y);
+                ctx.fillText(this.scoreString, this.x, this.y);
             }
         }
 
         class Lives {
             constructor(lives = 3) {
-                this.lives = ("Lives: " + lives);
+                this.lives = lives;
+                this.livesString = ("Lives: " + lives);
                 this.color = "#0095DD";
                 this.font = "16px Comic Sans MS";
                 this.x = canvas.width - 65;
@@ -137,9 +142,10 @@
             }
 
             render(ctx) {
+                this.livesString = ("Lives: " + this.lives);
                 ctx.font = this.font;
                 ctx.fillStyle = this.color;
-                ctx.fillText(this.lives, this.x, this.y);
+                ctx.fillText(this.livesString, this.x, this.y);
             }
         }
 
@@ -169,7 +175,7 @@
         var bricks = [];
 
         // creates a paddle object
-        const ball = new Ball();
+        const ball = new Ball(10);
         const brick = new Brick();
         const paddle = new Paddle();
         // const background = new Background();
@@ -225,12 +231,12 @@
         function collisionDetection() {
             for (var columns = 0; columns < brickColumnCount; columns++) {
                 for (var rows = 0; rows < brickRowCount; rows++) {
-                    var b = bricks[columns][rows];
-                    if (b.status == 1) {
-                        if (brick.x > b.x && brick.x < b.x + brick.width && brick.y > b.y && brick.y < b.y + brick.height) {
+                    var brick = bricks[columns][rows];
+                    if (brick.status == 1) {
+                        if (ball.x > brick.x && ball.x < brick.x + brick.width && ball.y > brick.y && ball.y < brick.y + brick.height) {
                             ball.dy = -ball.dy;
-                            b.status = 0;
-                            score++;
+                            brick.status = 0;
+                            score.score++;
                             if (score == brickRowCount * brickColumnCount) {
                                 document.location.reload();
                             }
@@ -267,8 +273,8 @@
                 if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
                     ball.dy = -ball.dy;
                 } else {
-                    lives--;
-                    if (!lives) {
+                    lives.lives--;
+                    if (!lives.lives) {
                         alert("GAME OVER");
                         document.location.reload();
                     } else {
